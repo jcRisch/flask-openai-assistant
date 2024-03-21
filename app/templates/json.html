@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Classic JSON API response</title>
+</head>
+<body>
+    <pre id="jsonContent"></pre>
+
+    <script>
+        // Parse le JSON en objet JavaScript
+        var jsonData = JSON.parse('{{ json_response|tojson|safe }}');
+
+        // Convertit l'objet JavaScript en chaîne JSON formatée
+        var prettyJson = JSON.stringify(jsonData, null, 4);
+
+        // Affiche le JSON formaté dans l'élément <pre>
+        document.getElementById('jsonContent').textContent = prettyJson;
+    </script>
+</body>
+</html>

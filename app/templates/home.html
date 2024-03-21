@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OpenAI Assistant API - Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault(); 
+
+            const responseElement = document.getElementById('response');
+            const responseContentElement = document.getElementById('response_content');
+            responseContentElement.style.display = 'none';
+            responseElement.style.display = 'none';
+
+            const sendButton = event.target.querySelector('button[type="submit"]');
+            sendButton.disabled = true;
+            sendButton.innerHTML = 'Sending... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+            const formData = new FormData(event.target); 
+            const message = formData.get('message'); 
+
+            const response = await fetch('/assistant', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({message: message}),
+            });
+
+            const responseData = await response.json(); 
+            sendButton.disabled = false;
+            sendButton.innerHTML = 'Send';
+
+            if (responseData.assistant_response) {
+                responseContentElement.textContent = responseData.assistant_response;
+                responseContentElement.style.display = 'block'; 
+
+                responseElement.textContent = JSON.stringify(responseData, null, 4);
+                responseElement.style.display = 'block';
+            } else {
+                responseContentElement.style.display = 'none';
+                responseElement.style.display = 'none'; 
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">IT Administrator Assistant - Assistant API Example</h1>
+        <div>
+            <form id="messageForm" onsubmit="handleSubmit(event)" class="mb-3">
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <input type="text" id="message" name="message" class="form-control" autocomplete="off" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+            <pre id="response_content" class="p-3" style="display:none;"></pre>
+            <pre id="response" class="p-3 bg-light border" style="display:none;"></pre>
+        </div>
+        <p><i>Created by <a href="https://www.linkedin.com/in/jean-charles-risch/">Jean-Charles Risch</a></i></p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
